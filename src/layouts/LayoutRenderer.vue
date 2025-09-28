@@ -1,10 +1,19 @@
-<template>
-  <div v-if="layout.visible" :class="layoutClassObject.root">
-    <!-- <pre v-text="JSON.stringify(layout, null, 2)"></pre> -->
-    <div v-for="(element, index) in layout.uischema.elements" :key="`${layout.path}-${index}`" :class="layoutClassObject.item">
-      <dispatch-renderer :schema="layout.schema" :uischema="element" :path="layout.path" :enabled="layout.enabled" :renderers="layout.renderers" :cells="layout.cells" />
-    </div>
-  </div>
+<template lang="pug">
+  .q-col-gutter-sm(v-if="layout.visible" :class="[layoutClassObject.root, layout.direction]")
+    //- pre(v-text="JSON.stringify(layout, null, 2)")
+    .col.col-xs-12(
+      v-for="(element, index) in layout.uischema.elements"
+      :key="`${layout.path}-${index}`"
+      :class="[`col-md-${12 / layout.uischema.elements.length}`, layoutClassObject.item]"
+    )
+      dispatch-renderer(
+        :schema="layout.schema"
+        :uischema="element"
+        :path="layout.path"
+        :enabled="layout.enabled"
+        :renderers="layout.renderers"
+        :cells="layout.cells"
+      )
 </template>
 
 <script lang="ts">
@@ -26,9 +35,7 @@ const layoutRenderer = defineComponent({
   },
   computed: {
     layoutClassObject(): any {
-      // console.log('this.styles', this.styles)
       return this.layout.direction === 'row' ? this.styles.horizontalLayout : this.styles.verticalLayout
-      return {}
     },
   },
 })

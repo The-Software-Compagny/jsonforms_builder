@@ -24,8 +24,12 @@
 */
 import * as issue_1884 from './items/1884'
 import * as simple_form from './items/simple-form'
+import * as issue_1948 from './items/1948'
+import * as dates from './items/dates'
 
 export {
   issue_1884,
   simple_form,
+  issue_1948,
+  dates,
 }

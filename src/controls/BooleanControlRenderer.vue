@@ -1,18 +1,31 @@
-<template>
-  <control-wrapper v-bind="controlWrapper" :styles="styles" :is-focused="isFocused" :applied-options="appliedOptions">
-    <input
-      :id="control.id + '-input'"
-      type="checkbox"
-      :class="styles.control.input"
-      :checked="!!control.data"
-      :disabled="!control.enabled"
-      :autofocus="appliedOptions.focus"
-      :placeholder="appliedOptions.placeholder"
-      @change="onChange"
-      @focus="isFocused = true"
-      @blur="isFocused = false"
-    />
-  </control-wrapper>
+<template lang="pug">
+  control-wrapper(
+    v-bind="controlWrapper"
+    :styles="styles"
+    :is-focused="isFocused"
+    :applied-options="appliedOptions"
+  )
+    .q-field__inner.relative-position.col.self-stretch
+      .q-field.row.no-wrap.items-start.q-field--dark.q-field--error.q-field--densed
+        //- pre(v-text="JSON.stringify(control.data, null, 2)")
+        q-checkbox.q-field__control(
+          @update:model-value="onChange"
+          @focus="handleFocus"
+          @blur="handleBlur"
+          :id="control.id + '-input'"
+          :model-value="control.data"
+          :label="controlWrapper.label"
+          :class="styles.control.input"
+          :disable="!control.enabled"
+          :placeholder="appliedOptions.placeholder"
+          :hint="control.description"
+          :error="control.errors !== ''"
+          :error-message="control.errors"
+          :clearable="control.enabled"
+        )
+        .q-field__bottom.row.items-start.q-field__bottom--animated
+          .q-field__messages.col
+            div(v-if="control.errors !== ''" role='alert' v-text='control.errors')
 </template>
 
 <script lang="ts">
@@ -31,7 +44,7 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVanillaControl(useJsonFormsControl(props), (target) => target.checked)
+    return useVanillaControl(useJsonFormsControl(props))
   },
 })
 

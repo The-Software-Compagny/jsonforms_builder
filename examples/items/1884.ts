@@ -175,7 +175,7 @@ export const uischema = {
 }
 
 export const data = {
-  firstName: 'Max',
+  firstName: 'M',
   lastName: 'Power',
   committer: false,
 }

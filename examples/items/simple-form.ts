@@ -68,7 +68,7 @@ export const uischema = {
 }
 
 export const data = {
-  name: '',
+  name: 'Jean',
   email: '',
   message: '',
 }

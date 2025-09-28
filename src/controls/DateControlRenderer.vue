@@ -11,7 +11,7 @@
       @focus="isFocused = true"
       @blur="isFocused = false"
       :id="control.id + '-input'"
-      :model-value="control.data"
+      :model-value="controlData"
       :label="controlWrapper.label"
       :class="styles.control.input"
       :disable="!control.enabled"
@@ -19,23 +19,26 @@
       :hint="control.description"
       :error="control.errors !== ''"
       :error-message="control.errors"
-      :clearable="control.enabled"
-      :step="step"
-      type='number'
+      :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
+      :clearable="true"
+      :debounce="100"
+      type="date"
       filled
     )
 </template>
 
 <script lang="ts">
-import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isIntegerControl } from '@jsonforms/core'
+import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isDateControl } from '@jsonforms/core'
 import { defineComponent } from 'vue'
 import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
 import { default as ControlWrapper } from './ControlWrapper.vue'
 import { determineClearValue, useVanillaControl } from '../utils'
 import { QInput } from 'quasar'
+import { isEmpty } from 'radash'
+import dayjs from 'dayjs'
 
 const controlRenderer = defineComponent({
-  name: 'IntegerControlRenderer',
+  name: 'StringControlRenderer',
   components: {
     ControlWrapper,
     QInput,
@@ -44,9 +47,9 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const clearValue = determineClearValue(0)
-    const adaptTarget = (value: any) => (value === null ? clearValue : Number(value))
-    const input = useVanillaControl(useJsonFormsControl(props), adaptTarget)
+    const clearValue = determineClearValue(undefined)
+    const adaptTarget = (value) => (isEmpty(value) ? clearValue : value)
+    const input = useVanillaControl(useJsonFormsControl(props), adaptTarget, 100)
 
     return {
       ...input,
@@ -54,9 +57,8 @@ const controlRenderer = defineComponent({
     }
   },
   computed: {
-    step(): number {
-      const options: any = this.appliedOptions
-      return options.step ?? 1
+    controlData() {
+      return dayjs(this.control.data).format('YYYY-MM-DD')
     },
   },
 })
@@ -65,6 +67,6 @@ export default controlRenderer
 
 export const entry: JsonFormsRendererRegistryEntry = {
   renderer: controlRenderer,
-  tester: rankWith(1, isIntegerControl),
+  tester: rankWith(2, isDateControl),
 }
 </script>

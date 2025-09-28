@@ -1,16 +1,11 @@
-<template>
-  <div v-if="visible" :id="id" :class="styles.control.root">
-    <label :for="id + '-input'" :class="[styles.control.label, required ? styles.control.required : '']">
-      {{ label }}
-      <span v-if="showAsterisk" :class="styles.control.asterisk">*</span>
-    </label>
-    <div :class="styles.control.wrapper">
-      <slot></slot>
-    </div>
-    <div :class="errors ? styles.control.error : styles.control.description">
-      {{ errors ? errors : showDescription ? description : null }}
-    </div>
-  </div>
+<template lang="pug">
+  div(v-if="visible" :id="id" :class="styles.control.root")
+    .q-field__inner.relative-position.col.self-stretch
+      //- .q-field.row.no-wrap.items-start.q-field--filled.q-input.q-field--labeled.q-field--dark.q-field--error.q-field--highlighted.q-field--with-bottom.input
+      slot
+      //- .q-field__bottom.row.items-start.q-field__bottom--animated(v-if='"#/properties/committer" === id')
+      //-   .q-field__messages.col
+      //-     div(role='alert') is a required propertyy
 </template>
 
 <script lang="ts">
@@ -68,7 +63,12 @@ export default defineComponent({
   },
   computed: {
     showDescription(): boolean {
-      return !isDescriptionHidden(this.visible, this.description, this.isFocused, !!this.appliedOptions?.showUnfocusedDescription)
+      return !isDescriptionHidden(
+        this.visible,
+        this.description,
+        this.isFocused,
+        !!this.appliedOptions?.showUnfocusedDescription,
+      )
     },
     showAsterisk(): boolean {
       return this.required && !this.appliedOptions?.hideRequiredAsterisk

@@ -1,18 +1,35 @@
-<template>
-  <control-wrapper v-bind="controlWrapper" :styles="styles" :is-focused="isFocused" :applied-options="appliedOptions">
-    <!-- <pre v-text="JSON.stringify(styles, null, 2)"></pre> -->
-    <input
-      :id="control.id + '-input'"
-      :class="styles.control.input"
-      :value="control.data"
-      :disabled="!control.enabled"
-      :autofocus="appliedOptions.focus"
-      :placeholder="appliedOptions.placeholder"
-      @change="onChange"
+<template lang="pug">
+  control-wrapper(
+    v-bind="controlWrapper"
+    :styles="styles"
+    :is-focused="isFocused"
+    :applied-options="appliedOptions"
+  )
+    //- pre(v-text="JSON.stringify(control.data, null, 2)")
+    q-input(
+      @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
-    />
-  </control-wrapper>
+      :id="control.id + '-input'"
+      :model-value="control.data"
+      :label="controlWrapper.label"
+      :class="styles.control.input"
+      :disable="!control.enabled"
+      :placeholder="appliedOptions.placeholder"
+      :hint="control.description"
+      :error="control.errors !== ''"
+      :error-message="control.errors"
+      :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
+      :clearable="true"
+      :debounce="100"
+      filled
+    )
+      //- q-menu(context-menu)
+      //-   q-list(dense)
+      //-     q-item(clickable v-close-popup)
+      //-       q-item-section(side)
+      //-         q-icon(name="mdi-bug")
+      //-       q-item-section Debug
 </template>
 
 <script lang="ts">
@@ -20,18 +37,28 @@ import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isStringContr
 import { defineComponent } from 'vue'
 import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
 import { default as ControlWrapper } from './ControlWrapper.vue'
-import { useVanillaControl } from '../utils'
+import { determineClearValue, useVanillaControl } from '../utils'
+import { QInput } from 'quasar'
+import { isEmpty } from 'radash'
 
 const controlRenderer = defineComponent({
   name: 'StringControlRenderer',
   components: {
     ControlWrapper,
+    QInput,
   },
   props: {
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVanillaControl(useJsonFormsControl(props), (target) => target.value || undefined)
+    const clearValue = determineClearValue(undefined)
+    const adaptTarget = (value) => (isEmpty(value) ? clearValue : value)
+    const input = useVanillaControl(useJsonFormsControl(props), adaptTarget, 100)
+
+    return {
+      ...input,
+      adaptTarget,
+    }
   },
 })
 
