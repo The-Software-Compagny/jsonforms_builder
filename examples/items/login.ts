@@ -22,19 +22,57 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import { ExampleDescription } from './example'
+import { registerExamples } from '../register';
 
-const knownExamples: { [key: string]: ExampleDescription } = {}
+export const schema = {
+  type: 'object',
+  properties: {
+    username: {
+      type: 'string',
+      description: 'Login Name',
+    },
+    password: {
+      type: 'string',
+      format: 'password',
+      description: 'Login password',
+    },
+  },
+  required: ['username', 'password'],
+};
 
-export const registerExamples = (examples: ExampleDescription[]): void => {
-  examples.forEach((example) => (knownExamples[example.name] = example))
-}
+export const uischema = {
+  type: 'VerticalLayout',
+  elements: [
+    {
+      type: 'Label',
+      text: 'Login Information',
+    },
+    {
+      type: 'HorizontalLayout',
+      elements: [
+        {
+          type: 'Control',
+          scope: '#/properties/username',
+        },
+        {
+          type: 'Control',
+          scope: '#/properties/password',
+        },
+      ],
+    },
+  ],
+};
 
-export const getExamples: () => ExampleDescription[] = () => {
-  const examples = Object.keys(knownExamples).map((key) => knownExamples[key])
-  examples.sort((a, b) => a.label.localeCompare(b.label))
+const data = {
+  username: 'john.doe@email.com',
+};
 
-  console.log('Known examples', knownExamples)
-
-  return examples
-}
+registerExamples([
+  {
+    name: 'login',
+    label: 'Login Form',
+    data,
+    schema,
+    uischema,
+  },
+]);

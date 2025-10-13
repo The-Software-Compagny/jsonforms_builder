@@ -1,6 +1,5 @@
 <template lang="pug">
-  .q-col-gutter-sm(v-if="layout.visible" :class="[layoutClassObject.root, layout.direction]")
-    //- pre(v-text="JSON.stringify(layout, null, 2)")
+  .q-col-gutter-sm.q-pa-sm(v-if="layout.visible" :class="[layoutClassObject.root, layout.direction]")
     .col.col-xs-12(
       v-for="(element, index) in layout.uischema.elements"
       :key="`${layout.path}-${index}`"

@@ -4,28 +4,32 @@
     :styles="styles"
     :is-focused="isFocused"
     :applied-options="appliedOptions"
+    v-model:is-hovered="isHovered"
   )
-    .q-field__inner.relative-position.col.self-stretch
-      .q-field.row.no-wrap.items-start.q-field--dark.q-field--error.q-field--densed
-        //- pre(v-text="JSON.stringify(control.data, null, 2)")
-        q-checkbox.q-field__control(
-          @update:model-value="onChange"
-          @focus="handleFocus"
-          @blur="handleBlur"
-          :id="control.id + '-input'"
-          :model-value="control.data"
-          :label="controlWrapper.label"
-          :class="styles.control.input"
-          :disable="!control.enabled"
-          :placeholder="appliedOptions.placeholder"
-          :hint="control.description"
-          :error="control.errors !== ''"
-          :error-message="control.errors"
-          :clearable="control.enabled"
-        )
-        .q-field__bottom.row.items-start.q-field__bottom--animated
-          .q-field__messages.col
-            div(v-if="control.errors !== ''" role='alert' v-text='control.errors')
+    q-field(
+      v-bind="quasarProps('q-field')"
+      @focus="handleFocus"
+      @blur="handleBlur"
+      :id="control.id + '-input'"
+      :class="styles.control.input"
+      :hint="control.description"
+      :required="control.required"
+      :hide-hint="persistentHint()"
+      :error="control.errors !== ''"
+      :error-message="control.errors"
+      borderless
+      dense
+    )
+      q-checkbox(
+        v-bind="quasarProps('q-checkbox')"
+        @update:model-value="onChange"
+        :id="control.id + '_q-checkbox'"
+        :model-value="control.data"
+        :label="controlWrapper.label"
+        :disable="!control.enabled"
+        :error="control.errors !== ''"
+        :error-message="control.errors"
+      )
 </template>
 
 <script lang="ts">
@@ -33,7 +37,7 @@ import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isBooleanCont
 import { defineComponent } from 'vue'
 import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
 import { default as ControlWrapper } from './ControlWrapper.vue'
-import { useVanillaControl } from '../utils'
+import { useQuasarControl } from '../utils'
 
 const controlRenderer = defineComponent({
   name: 'BooleanControlRenderer',
@@ -44,7 +48,11 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    return useVanillaControl(useJsonFormsControl(props))
+    const input = useQuasarControl(useJsonFormsControl(props))
+
+    return {
+      ...input,
+    }
   },
 })
 

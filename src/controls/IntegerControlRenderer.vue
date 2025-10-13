@@ -4,9 +4,10 @@
     :styles="styles"
     :is-focused="isFocused"
     :applied-options="appliedOptions"
+    v-model:is-hovered="isHovered"
   )
-    //- pre(v-text="JSON.stringify(control.data, null, 2)")
     q-input(
+      v-bind="quasarProps('q-input')"
       @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
@@ -16,23 +17,30 @@
       :class="styles.control.input"
       :disable="!control.enabled"
       :placeholder="appliedOptions.placeholder"
+      :autofocus="appliedOptions.focus"
+      :required="control.required"
       :hint="control.description"
+      :hide-hint="persistentHint()"
       :error="control.errors !== ''"
       :error-message="control.errors"
-      :clearable="control.enabled"
+      :clearable="isClearable"
+      :debounce="100"
       :step="step"
       type='number'
-      filled
+      outlined
+      stack-label
+      dense
     )
 </template>
 
 <script lang="ts">
 import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isIntegerControl } from '@jsonforms/core'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
 import { default as ControlWrapper } from './ControlWrapper.vue'
-import { determineClearValue, useVanillaControl } from '../utils'
+import { determineClearValue, useQuasarControl } from '../utils'
 import { QInput } from 'quasar'
+import { isEmpty } from 'radash'
 
 const controlRenderer = defineComponent({
   name: 'IntegerControlRenderer',
@@ -44,9 +52,9 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const clearValue = determineClearValue(0)
-    const adaptTarget = (value: any) => (value === null ? clearValue : Number(value))
-    const input = useVanillaControl(useJsonFormsControl(props), adaptTarget)
+    const clearValue = determineClearValue(undefined)
+    const adaptTarget = (value: any) => (isEmpty(value) ? clearValue : Number(value))
+    const input = useQuasarControl(useJsonFormsControl(props), adaptTarget)
 
     return {
       ...input,

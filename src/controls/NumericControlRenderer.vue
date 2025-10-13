@@ -6,7 +6,6 @@
     :applied-options="appliedOptions"
     v-model:is-hovered="isHovered"
   )
-    //- pre(v-text="JSON.stringify(control.data, null, 2)")
     q-input(
       v-bind="quasarProps('q-input')"
       @update:model-value="onChange"
@@ -18,23 +17,31 @@
       :class="styles.control.input"
       :disable="!control.enabled"
       :placeholder="appliedOptions.placeholder"
-      :required="control.required"
       :autofocus="appliedOptions.focus"
+      :required="control.required"
       :hint="control.description"
       :hide-hint="persistentHint()"
       :error="control.errors !== ''"
       :error-message="control.errors"
-      :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
       :clearable="isClearable"
       :debounce="100"
-      type="datetime-local"
+      :step="step"
+      type='number'
       outlined
+      stack-label
       dense
     )
 </template>
 
 <script lang="ts">
-import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isDateTimeControl } from '@jsonforms/core'
+import {
+  ControlElement,
+  JsonFormsRendererRegistryEntry,
+  rankWith,
+  isIntegerControl,
+  or,
+  isNumberControl,
+} from '@jsonforms/core'
 import { defineComponent, ref } from 'vue'
 import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
 import { default as ControlWrapper } from './ControlWrapper.vue'
@@ -43,7 +50,7 @@ import { QInput } from 'quasar'
 import { isEmpty } from 'radash'
 
 const controlRenderer = defineComponent({
-  name: 'DateTimeControlRenderer',
+  name: 'IntegerControlRenderer',
   components: {
     ControlWrapper,
     QInput,
@@ -53,13 +60,19 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const clearValue = determineClearValue(undefined)
-    const adaptTarget = (value) => (isEmpty(value) ? clearValue : value)
-    const input = useQuasarControl(useJsonFormsControl(props), adaptTarget, 100)
+    const adaptTarget = (value: any) => (isEmpty(value) ? clearValue : Number(value))
+    const input = useQuasarControl(useJsonFormsControl(props), adaptTarget)
 
     return {
       ...input,
       adaptTarget,
     }
+  },
+  computed: {
+    step(): number {
+      const options: any = this.appliedOptions
+      return options.step ?? 1
+    },
   },
 })
 
@@ -67,6 +80,6 @@ export default controlRenderer
 
 export const entry: JsonFormsRendererRegistryEntry = {
   renderer: controlRenderer,
-  tester: rankWith(2, isDateTimeControl),
+  tester: rankWith(1, or(isIntegerControl, isNumberControl)),
 }
 </script>

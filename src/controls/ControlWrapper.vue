@@ -1,5 +1,11 @@
 <template lang="pug">
-  div(v-if="visible" :id="id" :class="styles.control.root")
+  div(
+    v-if="visible"
+    :id="id"
+    :class="styles.control.root"
+    @mouseover="mouseOver"
+    @mouseleave="mouseLeave"
+  )
     .q-field__inner.relative-position.col.self-stretch
       //- .q-field.row.no-wrap.items-start.q-field--filled.q-input.q-field--labeled.q-field--dark.q-field--error.q-field--highlighted.q-field--with-bottom.input
       slot
@@ -9,10 +15,10 @@
 </template>
 
 <script lang="ts">
-import { isDescriptionHidden } from '@jsonforms/core'
 import { defineComponent, PropType } from 'vue'
 import { Styles } from '../styles'
 import { Options } from '../utils'
+import { debounce } from 'quasar'
 
 export default defineComponent({
   name: 'ControlWrapper',
@@ -56,22 +62,24 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    isHovered: {
+      required: false as const,
+      type: Boolean,
+      default: false,
+    },
     styles: {
       required: true,
       type: Object as PropType<Styles>,
     },
   },
-  computed: {
-    showDescription(): boolean {
-      return !isDescriptionHidden(
-        this.visible,
-        this.description,
-        this.isFocused,
-        !!this.appliedOptions?.showUnfocusedDescription,
-      )
+  methods: {
+    mouseOver() {
+      this.$emit('update:isHovered', true)
     },
-    showAsterisk(): boolean {
-      return this.required && !this.appliedOptions?.hideRequiredAsterisk
+    mouseLeave() {
+      debounce(() => {
+        this.$emit('update:isHovered', false)
+      }, 300)()
     },
   },
 })

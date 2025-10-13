@@ -26,7 +26,7 @@ import { registerExamples } from '../register'
 
 export const schema = {
   type: 'object',
-  required: ['age'],
+  required: ['age', 'committer'],
   properties: {
     firstName: {
       type: 'string',
@@ -37,6 +37,7 @@ export const schema = {
       type: 'string',
       minLength: 5,
       maxLength: 15,
+      description: 'Your last name',
     },
     age: {
       type: 'integer',
@@ -46,6 +47,7 @@ export const schema = {
     gender: {
       type: 'string',
       enum: ['Male', 'Female', 'Undisclosed'],
+      description: 'Your gender',
     },
     height: {
       type: 'number',
@@ -59,6 +61,7 @@ export const schema = {
     },
     committer: {
       type: 'boolean',
+      description: 'Are you a committer?',
     },
     address: {
       type: 'object',
@@ -119,6 +122,9 @@ export const uischema = {
         {
           type: 'Control',
           scope: '#/properties/height',
+          options: {
+            step: 0.01,
+          }
         },
         {
           type: 'Control',
@@ -177,7 +183,7 @@ export const uischema = {
 export const data = {
   firstName: 'M',
   lastName: 'Power',
-  committer: false,
+  // committer: false,
 }
 
 registerExamples([

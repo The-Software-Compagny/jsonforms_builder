@@ -22,19 +22,54 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import { ExampleDescription } from './example'
+import { registerExamples } from '../register';
 
-const knownExamples: { [key: string]: ExampleDescription } = {}
-
-export const registerExamples = (examples: ExampleDescription[]): void => {
-  examples.forEach((example) => (knownExamples[example.name] = example))
+export const schema = {
+  "type": "object",
+  "properties": {
+    "exampleRadioEnum": {
+      "type": "string",
+      "enum": ["Red", "Green", "Blue"]
+    }
+  }
 }
 
-export const getExamples: () => ExampleDescription[] = () => {
-  const examples = Object.keys(knownExamples).map((key) => knownExamples[key])
-  examples.sort((a, b) => a.label.localeCompare(b.label))
-
-  console.log('Known examples', knownExamples)
-
-  return examples
+export const uischema = {
+  "type": "Control",
+  "scope": "#/properties/exampleRadioEnum",
+  "options": {
+    "format": "radio",
+    "quasar": {
+      "q-option-group": {
+        "prepend-icon": "mdi-palette",
+        "column": false,
+        "row": true
+      },
+      "v-radio": {
+        "Blue": {
+          "color": "blue"
+        },
+        "Red": {
+          "color": "red"
+        },
+        "Green": {
+          "color": "green"
+        }
+      }
+    }
+  }
 }
+
+export const data = {
+  exampleRadioEnum: 'Green',
+}
+
+registerExamples([
+  {
+    name: 'Radio',
+    label: 'Radio Example',
+    data,
+    schema,
+    uischema,
+  },
+]);

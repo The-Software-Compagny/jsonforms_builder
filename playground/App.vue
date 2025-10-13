@@ -3,33 +3,35 @@
     layout-default-header
     layout-default-drawer
     q-page-container.q-mx-md
-      //- pre(v-text="JSON.stringify(example, null, 2)")
-      q-card(flat)
-        q-tabs(v-model="tabs")
-          q-tab(v-for="example in examples" :key="example.name" :name="example.name" :label="example.label")
-
-      q-card(flat)
-        q-card-section
-          json-forms(
-            :key="example.name"
-            :data="data"
-            :schema="example.schema"
-            :uischema="example.uischema"
-            :renderers="renderers"
-            :i18n="example.i18n"
-            :additional-errors="additionalErrors"
-            @change="onChange"
-          )
-        q-separator
-        q-card-section
-          pre(v-text="JSON.stringify(data, null, 2)")
+      q-splitter(v-model="splitterModel")
+        template(#before)
+          q-card(flat)
+            q-tabs(v-model="tabs" vertical)
+              q-tab(v-for="example in examples" :key="example.name" :name="example.name" :label="example.label")
+        template(#after)
+          q-card(flat bordered square)
+            q-card-section.q-pa-none
+              q-form
+                json-forms(
+                  :key="example.name"
+                  :data="data"
+                  :schema="example.schema"
+                  :uischema="example.uischema"
+                  :renderers="renderers"
+                  :i18n="example.i18n"
+                  :additional-errors="additionalErrors"
+                  @change="onChange"
+                )
+            q-separator
+            q-card-section
+              pre(v-text="JSON.stringify(data, null, 2)")
     layout-default-footer
 </template>
 <script lang="ts">
 import { defineComponent, provide, ref } from 'vue'
 import { JsonForms, JsonFormsChangeEvent } from '@jsonforms/vue'
 import { ErrorObject } from 'ajv'
-import { vanillaRenderers } from '../src'
+import { quasarRenderers } from '../src'
 import { getExamples } from '../examples/register'
 import { useQuasar } from 'quasar'
 import LayoutDefaultHeader from './components/layout/default/header.vue'
@@ -50,7 +52,8 @@ export default defineComponent({
     const additionalErrors: ErrorObject[] = []
     return {
       data: {},
-      renderers: Object.freeze(vanillaRenderers),
+      splitterModel: 35,
+      renderers: Object.freeze(quasarRenderers),
       examples,
       additionalErrors,
       wls: window.location.search,

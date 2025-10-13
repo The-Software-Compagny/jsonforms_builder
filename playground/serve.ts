@@ -1,6 +1,7 @@
 import '../examples'
 import 'quasar/src/css/index.sass'
 import '@quasar/extras/mdi-v7/mdi-v7.css'
+import langFr from 'quasar/lang/fr'
 
 import { createApp } from 'vue'
 import { Quasar } from 'quasar'
@@ -11,6 +12,7 @@ const myApp = createApp(App)
 
 myApp.use(Quasar, {
   iconSet,
+  lang: langFr,
   config: {
     dark: 'auto',
     brand: {

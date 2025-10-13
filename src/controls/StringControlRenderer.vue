@@ -4,32 +4,35 @@
     :styles="styles"
     :is-focused="isFocused"
     :applied-options="appliedOptions"
+    v-model:is-hovered="isHovered"
   )
-    //- pre(v-text="JSON.stringify(control.data, null, 2)")
     q-input(
+      v-bind="quasarProps('q-input')"
       @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
       :id="control.id + '-input'"
       :model-value="control.data"
-      :label="controlWrapper.label"
+      :label="computedLabel"
       :class="styles.control.input"
-      :disable="!control.enabled"
+      clear-icon="mdi-close"
+      :disable="!control.enabled && !isReadonly"
       :placeholder="appliedOptions.placeholder"
+      :readonly="isReadonly"
+      :autofocus="appliedOptions.focus"
       :hint="control.description"
+      :required="control.required"
+      :hide-hint="persistentHint()"
       :error="control.errors !== ''"
       :error-message="control.errors"
-      :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
-      :clearable="true"
+      :maxlength="control.schema.maxLength"
+      :counter="appliedOptions.restrict"
+      :clearable="isClearable"
       :debounce="100"
-      filled
+      outlined
+      stack-label
+      dense
     )
-      //- q-menu(context-menu)
-      //-   q-list(dense)
-      //-     q-item(clickable v-close-popup)
-      //-       q-item-section(side)
-      //-         q-icon(name="mdi-bug")
-      //-       q-item-section Debug
 </template>
 
 <script lang="ts">
@@ -37,7 +40,7 @@ import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isStringContr
 import { defineComponent } from 'vue'
 import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
 import { default as ControlWrapper } from './ControlWrapper.vue'
-import { determineClearValue, useVanillaControl } from '../utils'
+import { determineClearValue, useQuasarControl } from '../utils'
 import { QInput } from 'quasar'
 import { isEmpty } from 'radash'
 
@@ -53,7 +56,7 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const clearValue = determineClearValue(undefined)
     const adaptTarget = (value) => (isEmpty(value) ? clearValue : value)
-    const input = useVanillaControl(useJsonFormsControl(props), adaptTarget, 100)
+    const input = useQuasarControl(useJsonFormsControl(props), adaptTarget, 100)
 
     return {
       ...input,

@@ -1,6 +1,7 @@
 export * from './additional'
 export * from './controls'
 export * from './layouts'
+export * from './i18n'
 export * from './renderers'
 export * from './styles'
 export * from './utils'

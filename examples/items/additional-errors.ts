@@ -1,7 +1,7 @@
 /*
   The MIT License
 
-  Copyright (c) 2017-2019 EclipseSource Munich
+  Copyright (c) 2022 STMicroelectronics and others.
   https://github.com/eclipsesource/jsonforms
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,19 +22,39 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import { ExampleDescription } from './example'
+import { ErrorObject } from 'ajv';
+import { StateProps } from '../example';
+import { registerExamples } from '../register';
+import { schema, uischema, data } from './person';
 
-const knownExamples: { [key: string]: ExampleDescription } = {}
+export const additionalErrors: ErrorObject[] = [];
 
-export const registerExamples = (examples: ExampleDescription[]): void => {
-  examples.forEach((example) => (knownExamples[example.name] = example))
-}
+export const actions = [
+  {
+    label: 'Add additional error',
+    apply: (props: StateProps) => {
+      additionalErrors.push({
+        instancePath: '/personalData/age',
+        message: `New error #${additionalErrors.length + 1}`,
+        schemaPath: '',
+        keyword: '',
+        params: {},
+      });
+      return {
+        ...props,
+        additionalErrors: [...additionalErrors],
+      };
+    },
+  },
+];
 
-export const getExamples: () => ExampleDescription[] = () => {
-  const examples = Object.keys(knownExamples).map((key) => knownExamples[key])
-  examples.sort((a, b) => a.label.localeCompare(b.label))
-
-  console.log('Known examples', knownExamples)
-
-  return examples
-}
+registerExamples([
+  {
+    name: 'additional-errors',
+    label: 'Additional errors',
+    data,
+    schema,
+    uischema,
+    actions,
+  },
+]);

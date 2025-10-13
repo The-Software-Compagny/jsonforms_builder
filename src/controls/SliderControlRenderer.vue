@@ -6,55 +6,60 @@
     :applied-options="appliedOptions"
     v-model:is-hovered="isHovered"
   )
-    //- pre(v-text="JSON.stringify(control.data, null, 2)")
-    q-input(
-      v-bind="quasarProps('q-input')"
+    q-field(
+      v-bind="quasarProps('q-field')"
       @update:model-value="onChange"
-      @focus="isFocused = true"
-      @blur="isFocused = false"
       :id="control.id + '-input'"
       :model-value="control.data"
-      :label="controlWrapper.label"
+      :label="computedLabel"
       :class="styles.control.input"
       :disable="!control.enabled"
-      :placeholder="appliedOptions.placeholder"
-      :required="control.required"
-      :autofocus="appliedOptions.focus"
       :hint="control.description"
       :hide-hint="persistentHint()"
       :error="control.errors !== ''"
       :error-message="control.errors"
       :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
-      :clearable="isClearable"
       :debounce="100"
-      type="datetime-local"
       outlined
       dense
     )
+      template(#control)
+        q-slider(
+          v-bind="quasarProps('q-slider')"
+          @update:model-value="onChange"
+          @focus="isFocused = true"
+          @blur="isFocused = false"
+          :model-value="control.data"
+          :min="control.schema.minimum"
+          :max="control.schema.maximum"
+          :step="control.schema.multipleOf || 1"
+          label
+          label-always
+          dense
+        )
 </template>
 
 <script lang="ts">
-import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isDateTimeControl } from '@jsonforms/core'
-import { defineComponent, ref } from 'vue'
-import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
+import { isRangeControl, JsonFormsRendererRegistryEntry, rankWith, type ControlElement } from '@jsonforms/core'
+import { defineComponent } from 'vue'
+import { rendererProps, useJsonFormsControl, type RendererProps } from '@jsonforms/vue'
 import { default as ControlWrapper } from './ControlWrapper.vue'
 import { determineClearValue, useQuasarControl } from '../utils'
-import { QInput } from 'quasar'
-import { isEmpty } from 'radash'
+import { QSlider } from 'quasar'
 
 const controlRenderer = defineComponent({
-  name: 'DateTimeControlRenderer',
+  name: 'slider-control-renderer',
   components: {
     ControlWrapper,
-    QInput,
+    QSlider,
   },
   props: {
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const clearValue = determineClearValue(undefined)
-    const adaptTarget = (value) => (isEmpty(value) ? clearValue : value)
-    const input = useQuasarControl(useJsonFormsControl(props), adaptTarget, 100)
+    const clearValue = determineClearValue(0)
+    const adaptTarget = (value: any) => (value === null ? clearValue : Number(value))
+    const input = useQuasarControl(useJsonFormsControl(props), adaptTarget)
 
     return {
       ...input,
@@ -67,6 +72,6 @@ export default controlRenderer
 
 export const entry: JsonFormsRendererRegistryEntry = {
   renderer: controlRenderer,
-  tester: rankWith(2, isDateTimeControl),
+  tester: rankWith(4, isRangeControl),
 }
 </script>

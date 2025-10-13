@@ -1,12 +1,32 @@
-import { useStyles } from '../styles'
-import { computed, ComputedRef, inject, ref } from 'vue'
-import merge from 'lodash/merge'
+import { computeLabel, ControlElement, DispatchPropsOfControl, DispatchPropsOfMultiEnumControl, isDescriptionHidden, JsonFormsSubStates, JsonSchema, UISchemaElement } from '@jsonforms/core'
 import cloneDeep from 'lodash/cloneDeep'
-import { computeLabel, ControlElement, DispatchPropsOfControl, DispatchPropsOfMultiEnumControl, isDescriptionHidden, JsonFormsSubStates, UISchemaElement } from '@jsonforms/core'
 import debounce from 'lodash/debounce'
-import { IsDynamicPropertyContext } from './inject'
 import get from 'lodash/get'
 import isPlainObject from 'lodash/isPlainObject'
+import merge from 'lodash/merge'
+import { computed, ComputedRef, inject, ref } from 'vue'
+import { useStyles } from '../styles'
+import { IsDynamicPropertyContext } from './inject'
+
+/**
+ * Vérifie si un champ est en lecture seule en tenant compte de la compatibilité
+ * avec les différentes versions de JSON Schema
+ */
+const isFieldReadonly = (schema: JsonSchema, uischema: any): boolean => {
+  // Vérification de la propriété readonly dans le uischema (toujours supportée)
+  if (uischema?.options?.readonly === true) {
+    return true
+  }
+
+  // Vérification de la propriété readOnly dans le schema
+  // Cette propriété n'existe que depuis JSON Schema Draft 6
+  // En JSON Schema v4, cette propriété n'est pas disponible
+  if (schema && 'readOnly' in schema && (schema as any).readOnly === true) {
+    return true
+  }
+
+  return false
+}
 
 export const useControlAppliedOptions = <
   T extends { config: any; uischema: UISchemaElement },
@@ -21,6 +41,23 @@ export const useControlAppliedOptions = <
       {},
       cloneDeep(input.control.value.config),
       cloneDeep(input.control.value.uischema.options),
+    ),
+  )
+}
+
+export const useLayoutAppliedOptions = <
+  T extends { config: any; uischema: UISchemaElement },
+  I extends {
+    layout: ComputedRef<T>;
+  },
+>(
+  input: I,
+) => {
+  return computed(() =>
+    merge(
+      {},
+      cloneDeep(input.layout.value.config),
+      cloneDeep(input.layout.value.uischema.options),
     ),
   )
 }
@@ -41,8 +78,41 @@ export const useComputedLabel = <
   })
 }
 
-export const useVanillaControl = <
+export const useQuasarLabel = <
   T extends {
+    uischema: UISchemaElement,
+    config: any,
+  },
+  I extends {
+    label: ComputedRef<T>,
+  },
+>(
+  input: I,
+) => {
+  const styles = useStyles(input.label.value.uischema)
+  const appliedOptions = computed(() =>
+    merge(
+      {},
+      cloneDeep(input.label.value.config),
+      cloneDeep(input.label.value.uischema.options),
+    ),
+  )
+  const quasarProps = (path: string) => {
+    const props = get(appliedOptions.value?.quasar, path);
+
+    return props && isPlainObject(props) ? props : {};
+  }
+  return {
+    ...input,
+    appliedOptions,
+    quasarProps,
+    styles,
+  }
+}
+
+export const useQuasarControl = <
+  T extends {
+    schema: NonNullable<JsonSchema>
     uischema: ControlElement
     path: string
     config: any
@@ -71,7 +141,6 @@ export const useVanillaControl = <
 
   const onChange = (value: any) => {
     if (changeEmitter) {
-      // console.debug('onChange', input.control.value.path, value)
       changeEmitter(input.control.value.path, adaptTarget(value))
     }
   }
@@ -103,6 +172,16 @@ export const useVanillaControl = <
     )
   }
 
+  const isHovered = ref(false)
+
+  const isClearable = computed(() => {
+    if (appliedOptions.value?.clearable !== undefined) {
+      return appliedOptions.value.clearable
+    }
+
+    return isHovered.value || isFocused.value
+  })
+
   const controlWrapper = computed(() => {
     const { id, description, errors, label, visible, required } = input.control.value
 
@@ -111,7 +190,7 @@ export const useVanillaControl = <
 
   const computedLabel = useComputedLabel(input, appliedOptions)
 
-  const styles = useStyles(input.control.value.uischema)
+  const styles = useStyles(input?.control?.value?.uischema)
 
   const quasarProps = (path: string) => {
     const props = get(appliedOptions.value?.quasar, path)
@@ -128,6 +207,13 @@ export const useVanillaControl = <
 
   const rawErrors = computed(() => input.control.value.errors)
 
+  const isReadonly = computed(() => {
+    return isFieldReadonly(
+      input.control.value?.schema,
+      input.control.value?.uischema
+    )
+  })
+
   return {
     ...input,
     control: overwrittenControl,
@@ -143,6 +229,9 @@ export const useVanillaControl = <
     handleFocus,
     onChange,
     rawErrors,
+    isHovered,
+    isClearable,
+    isReadonly,
   }
 }
 
@@ -200,3 +289,5 @@ export const determineClearValue = (defaultValue: any) => {
   // undefined will clear the property from the object
   return useDefaultValue ? defaultValue : undefined
 }
+
+export { isFieldReadonly }
