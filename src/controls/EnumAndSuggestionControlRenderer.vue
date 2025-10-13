@@ -15,6 +15,7 @@
       :model-value="control.data"
       :label="computedLabel"
       :class="styles.control.input"
+      clear-icon="mdi-close"
       :disable="!control.enabled"
       :required="control.required"
       :placeholder="appliedOptions.placeholder"

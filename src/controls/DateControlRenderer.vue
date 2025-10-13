@@ -28,7 +28,6 @@
       :clearable="isClearable"
       :debounce="100"
       type="date"
-      fill-mask
       outlined
       dense
     )

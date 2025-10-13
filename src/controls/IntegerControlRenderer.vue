@@ -14,6 +14,7 @@
       :id="control.id + '-input'"
       :model-value="control.data"
       :label="controlWrapper.label"
+      clear-icon="mdi-close"
       :class="styles.control.input"
       :disable="!control.enabled"
       :placeholder="appliedOptions.placeholder"
