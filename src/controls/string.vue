@@ -31,6 +31,7 @@
       :debounce="100"
       outlined
       stack-label
+      dense
     )
 </template>
 
