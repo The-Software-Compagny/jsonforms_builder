@@ -4,6 +4,7 @@
     "": {
       "name": "@the-software-compagny/jsonforms_builder",
       "dependencies": {
+        "dayjs": "^1.11.13",
         "radash": "^12.1.1",
       },
       "devDependencies": {
@@ -17,7 +18,6 @@
         "@vitejs/plugin-vue": "^6.0.1",
         "@vue/language-plugin-pug": "^3.0.5",
         "cpr": "^3.0.1",
-        "dayjs": "^1.11.13",
         "eslint": "^9.32.0",
         "prettier": "^3.6.2",
         "quasar": "^2.18.2",

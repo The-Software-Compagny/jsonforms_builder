@@ -7,6 +7,7 @@ import merge from 'lodash/merge'
 import { computed, ComputedRef, inject, ref } from 'vue'
 import { useStyles } from '../styles'
 import { IsDynamicPropertyContext } from './inject'
+import { replace } from 'radash'
 
 /**
  * Vérifie si un champ est en lecture seule en tenant compte de la compatibilité
@@ -183,7 +184,8 @@ export const useQuasarControl = <
   })
 
   const controlWrapper = computed(() => {
-    const { id, description, errors, label, visible, required } = input.control.value
+    const { description, errors, label, visible, required } = input.control.value
+    const id = input.control.value.id.replace(/#\//g, '').replace(/\//g, '_')
 
     return { id, description, errors, label, visible, required }
   })
@@ -208,6 +210,10 @@ export const useQuasarControl = <
   const rawErrors = computed(() => input.control.value.errors)
 
   const isReadonly = computed(() => {
+    if (input.control.value.config?.readonly === true) {
+      return true
+    }
+
     return isFieldReadonly(
       input.control.value?.schema,
       input.control.value?.uischema
@@ -235,7 +241,7 @@ export const useQuasarControl = <
   }
 }
 
-export const useVanillaLayout = <I extends { layout: any }>(input: I) => {
+export const useQuasarLayout = <I extends { layout: any }>(input: I) => {
   const appliedOptions = computed(() =>
     merge(
       {},

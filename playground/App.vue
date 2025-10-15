@@ -11,15 +11,17 @@
         template(#after)
           q-card(flat bordered square)
             q-card-section.q-pa-none
-              q-form
+              q-form.q-pa-md
                 json-forms(
                   :key="example.name"
                   :data="data"
                   :schema="example.schema"
                   :uischema="example.uischema"
                   :renderers="renderers"
-                  :i18n="example.i18n"
+                  :i18n="i18n"
+                  validationMode="ValidateAndShow"
                   :additional-errors="additionalErrors"
+                  :config="{ trim: true }"
                   @change="onChange"
                 )
             q-separator
@@ -28,7 +30,7 @@
     layout-default-footer
 </template>
 <script lang="ts">
-import { defineComponent, provide, ref } from 'vue'
+import { defineComponent, provide, ref, computed } from 'vue'
 import { JsonForms, JsonFormsChangeEvent } from '@jsonforms/vue'
 import { ErrorObject } from 'ajv'
 import { quasarRenderers } from '../src'
@@ -63,9 +65,21 @@ export default defineComponent({
     const $q = useQuasar()
     const drawer = ref($q.screen.width > 700)
 
+    const locale = ref<'en' | 'bg'>('bg')
+
+    const createTranslator = (currentLocale: string) => (key: string, defaultMessage: string) => {
+      console.log(`Locale: ${currentLocale}, Key: ${key}, Default Message: ${defaultMessage}`)
+      return defaultMessage
+    }
+
+    const translation = computed(() => createTranslator(locale.value))
+
     provide('drawer', drawer)
 
-    return {}
+    return {
+      locale,
+      translation,
+    }
   },
   watch: {
     '$q.screen.lt.sm': {
@@ -105,6 +119,14 @@ export default defineComponent({
       }
 
       return example
+    },
+    i18n() {
+      console.log('example i18n', this.example?.i18n)
+      return this.example?.i18n || {}
+      // return {
+      //   locale: this.locale,
+      //   translate: this.translation,
+      // }
     },
   },
   methods: {

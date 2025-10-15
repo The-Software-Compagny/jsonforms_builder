@@ -21,6 +21,8 @@
       :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
       :debounce="100"
       outlined
+      hide-bottom-space
+      stack-label
       dense
     )
       template(#control)
@@ -43,7 +45,7 @@
 import { isRangeControl, JsonFormsRendererRegistryEntry, rankWith, type ControlElement } from '@jsonforms/core'
 import { defineComponent } from 'vue'
 import { rendererProps, useJsonFormsControl, type RendererProps } from '@jsonforms/vue'
-import { default as ControlWrapper } from './ControlWrapper.vue'
+import { ControlWrapper } from '../common'
 import { determineClearValue, useQuasarControl } from '../utils'
 import { QSlider } from 'quasar'
 

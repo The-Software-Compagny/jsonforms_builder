@@ -1,9 +1,9 @@
-import { additionalRenderers } from './additional'
-import { controlRenderers } from './controls'
-import { layoutRenderers } from './layouts'
+import { additionalsRenderers } from './additional'
+import { controlsRenderers } from './controls'
+import { layoutsRenderers } from './layouts'
 
 export const quasarRenderers = [
-  ...controlRenderers,
-  ...layoutRenderers,
-  ...additionalRenderers,
+  ...controlsRenderers,
+  ...layoutsRenderers,
+  ...additionalsRenderers,
 ]

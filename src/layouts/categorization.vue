@@ -41,7 +41,7 @@ import {
 } from '@jsonforms/core'
 import { DispatchRenderer, rendererProps, useJsonFormsCategorization, type RendererProps } from '@jsonforms/vue'
 import { defineComponent, ref } from 'vue'
-import { useQuasarControl } from '../utils'
+import { useQuasarLayout } from '../utils'
 
 const layoutRenderer = defineComponent({
   name: 'categorization-renderer',
@@ -55,7 +55,7 @@ const layoutRenderer = defineComponent({
     const activeCategory = ref(0)
 
     return {
-      ...useQuasarControl(useJsonFormsCategorization(props)),
+      ...useQuasarLayout(useJsonFormsCategorization(props)),
       activeCategory,
     }
   },

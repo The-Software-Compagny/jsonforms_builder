@@ -183,7 +183,8 @@ export const uischema = {
 export const data = {
   firstName: 'M',
   lastName: 'Power',
-  // committer: false,
+  height: 1,
+  committer: false,
 }
 
 registerExamples([

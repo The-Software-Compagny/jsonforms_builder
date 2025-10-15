@@ -6,20 +6,20 @@
     :applied-options="appliedOptions"
     v-model:is-hovered="isHovered"
   )
-    //- pre(v-text="JSON.stringify(control.data, null, 2)")
     q-input(
       v-bind="quasarProps('q-input')"
-      @update:model-value="onChange"
+      @update:model-value="onChangeDate"
       @focus="isFocused = true"
-      @blur="isFocused = false"
+      @blur="onBlur"
       :id="control.id + '-input'"
       :model-value="control.data"
       :label="controlWrapper.label"
       :class="styles.control.input"
+      clear-icon="mdi-close"
       :disable="!control.enabled"
       :placeholder="appliedOptions.placeholder"
-      :required="control.required"
       :autofocus="appliedOptions.focus"
+      :required="control.required"
       :hint="control.description"
       :hide-hint="persistentHint()"
       :error="control.errors !== ''"
@@ -27,23 +27,35 @@
       :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
       :clearable="isClearable"
       :debounce="100"
-      type="datetime-local"
+      type="date"
       outlined
+      hide-bottom-space
+      stack-label
       dense
     )
+      template(#prepend)
+        q-icon.cursor-pointer(name="mdi-calendar")
+          q-popup-proxy(transition-show="scale" transition-hide="scale")
+            q-date(
+              v-bind="quasarProps('q-date')"
+              @update:model-value="onChangeDate"
+              :model-value="controlData"
+              first-day-of-week="1"
+              mask="YYYY-MM-DD"
+            )
 </template>
 
 <script lang="ts">
-import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isDateTimeControl } from '@jsonforms/core'
-import { defineComponent, ref } from 'vue'
+import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isDateControl } from '@jsonforms/core'
+import { defineComponent } from 'vue'
 import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
-import { default as ControlWrapper } from './ControlWrapper.vue'
+import { ControlWrapper } from '../common'
 import { determineClearValue, useQuasarControl } from '../utils'
 import { QInput } from 'quasar'
 import { isEmpty } from 'radash'
 
 const controlRenderer = defineComponent({
-  name: 'DateTimeControlRenderer',
+  name: 'DateControlRenderer',
   components: {
     ControlWrapper,
     QInput,
@@ -61,12 +73,43 @@ const controlRenderer = defineComponent({
       adaptTarget,
     }
   },
+  computed: {
+    controlData() {
+      return this.control.data
+      // const date = dayjs(this.control.data)
+      // if (!this.control.data || !date.isValid()) {
+      //   return undefined
+      // }
+      // console.log('controlData', this.control.data, '->', date.format('YYYY-MM-DD'))
+      // return date.format('YYYY-MM-DD')
+    },
+  },
+  methods: {
+    onChangeDate(value: string) {
+      this.onChange(value)
+    },
+    onBlur() {
+      this.isFocused = false
+      // this.onChangeDate(this.controlData)
+    },
+  },
 })
 
 export default controlRenderer
 
 export const entry: JsonFormsRendererRegistryEntry = {
   renderer: controlRenderer,
-  tester: rankWith(2, isDateTimeControl),
+  tester: rankWith(2, isDateControl),
 }
 </script>
+
+<style>
+input[type='date']::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+input[type='date'] {
+  -moz-appearance: textfield;
+}
+</style>

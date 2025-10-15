@@ -27,7 +27,7 @@ import { QInput } from 'quasar'
 import { isEmpty } from 'radash'
 import { defineComponent } from 'vue'
 import { determineClearValue, useQuasarControl } from '../utils'
-import { default as ControlWrapper } from './ControlWrapper.vue'
+import { ControlWrapper } from '../common'
 
 const controlRenderer = defineComponent({
   name: 'RadioGroupControlRenderer',

@@ -1,30 +1,32 @@
-export { default as ControlWrapper } from './ControlWrapper.vue'
-export { default as StringControlRenderer } from './StringControlRenderer.vue'
-export { default as NumberControlRenderer } from './NumberControlRenderer.vue'
-export { default as IntegerControlRenderer } from './IntegerControlRenderer.vue'
-export { default as BooleanControlRenderer } from './BooleanControlRenderer.vue'
-export { default as DateControlRenderer } from './DateControlRenderer.vue'
-export { default as DateTimeControlRenderer } from './DateTimeControlRenderer.vue'
-export { default as PasswordControlRenderer } from './PasswordControlRenderer.vue'
-export { default as SliderControlRenderer } from './SliderControlRenderer.vue'
-export { default as EnumAndSuggestionControlRenderer } from './EnumAndSuggestionControlRenderer.vue'
-export { default as RadioGroupControlRenderer } from './RadioGroupControlRenderer.vue'
+export { default as ControlWrapper } from '../common/control-wrapper.vue'
+export { default as StringControlRenderer } from './string.vue'
+//export { default as NumberControlRenderer } from './NumberControlRenderer.vue'
+//export { default as IntegerControlRenderer } from './IntegerControlRenderer.vue'
+export { default as BooleanControlRenderer } from './boolean.vue'
+export { default as DateControlRenderer } from './date.vue'
+export { default as DateTimeControlRenderer } from './date-time.vue'
+export { default as PasswordControlRenderer } from './password.vue'
+export { default as SliderControlRenderer } from './slider.vue'
+export { default as EnumAndSuggestionControlRenderer } from './enum-and-suggestion.vue'
+export { default as RadioGroupControlRenderer } from './radio-group.vue'
+export { default as numericControlRenderer } from './numeric.vue'
 
-import { entry as stringControlRendererEntry } from './StringControlRenderer.vue'
-import { entry as numberControlRendererEntry } from './NumberControlRenderer.vue'
-import { entry as integerControlRendererEntry } from './IntegerControlRenderer.vue'
-import { entry as booleanControlRendererEntry } from './BooleanControlRenderer.vue'
-import { entry as dateControlRendererEntry } from './DateControlRenderer.vue'
-import { entry as dateTimeControlRendererEntry } from './DateTimeControlRenderer.vue'
-import { entry as passwordControlRendererEntry } from './PasswordControlRenderer.vue'
-import { entry as sliderControlRendererEntry } from './SliderControlRenderer.vue'
-import { entry as enumAndSuggestionControlRenderer } from './EnumAndSuggestionControlRenderer.vue'
-import { entry as radioGroupControlRenderer } from './RadioGroupControlRenderer.vue'
+import { entry as stringControlRendererEntry } from './string.vue'
+//import { entry as numberControlRendererEntry } from './NumberControlRenderer.vue'
+//import { entry as integerControlRendererEntry } from './IntegerControlRenderer.vue'
+import { entry as booleanControlRendererEntry } from './boolean.vue'
+import { entry as dateControlRendererEntry } from './date.vue'
+import { entry as dateTimeControlRendererEntry } from './date-time.vue'
+import { entry as passwordControlRendererEntry } from './password.vue'
+import { entry as sliderControlRendererEntry } from './slider.vue'
+import { entry as enumAndSuggestionControlRenderer } from './enum-and-suggestion.vue'
+import { entry as radioGroupControlRenderer } from './radio-group.vue'
+import { entry as numericControlRendererEntry } from './numeric.vue'
 
-export const controlRenderers = [
+export const controlsRenderers = [
   stringControlRendererEntry,
-  numberControlRendererEntry,
-  integerControlRendererEntry,
+  //numberControlRendererEntry,
+  //integerControlRendererEntry,
   booleanControlRendererEntry,
   dateControlRendererEntry,
   dateTimeControlRendererEntry,
@@ -32,4 +34,5 @@ export const controlRenderers = [
   sliderControlRendererEntry,
   enumAndSuggestionControlRenderer,
   radioGroupControlRenderer,
+  numericControlRendererEntry,
 ]

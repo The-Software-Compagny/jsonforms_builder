@@ -22,7 +22,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-import { registerExamples } from '../register';
+import { registerExamples } from '../register'
 
 export const personCoreSchema = {
   type: 'object',
@@ -31,9 +31,15 @@ export const personCoreSchema = {
       type: 'string',
       minLength: 3,
       description: 'Please enter your name',
+      "i18n": "name",
     },
     vegetarian: {
       type: 'boolean',
+    },
+    phone: {
+      type: "string",
+      minLength: 10,
+      pattern: "^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$"
     },
     birthDate: {
       type: 'string',
@@ -45,7 +51,7 @@ export const personCoreSchema = {
       enum: ['DE', 'IT', 'JP', 'US', 'RU', 'Other'],
     },
   },
-};
+}
 
 export const schema = {
   type: 'object',
@@ -106,6 +112,14 @@ export const uischema = {
           type: 'Control',
           scope: '#/properties/birthDate',
         },
+        {
+          type: 'Control',
+          scope: '#/properties/vegetarian',
+        },
+        {
+          type: 'Control',
+          scope: '#/properties/phone',
+        },
       ],
     },
     {
@@ -142,7 +156,7 @@ export const uischema = {
       ],
     },
   ],
-};
+}
 
 export const data = {
   name: 'John Doe',
@@ -152,7 +166,7 @@ export const data = {
     age: 34,
   },
   postalCode: '12345',
-};
+}
 
 registerExamples([
   {
@@ -162,4 +176,4 @@ registerExamples([
     schema,
     uischema,
   },
-]);
+])

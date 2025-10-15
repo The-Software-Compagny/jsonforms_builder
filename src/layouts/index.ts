@@ -1,10 +1,10 @@
-export { default as LayoutRenderer } from './LayoutRenderer.vue'
-export { default as CategorizationRenderer } from './CategorizationRenderer.vue'
+export { default as VerticalAndHorizontalLayoutRenderer } from './vertical-and-horizontal.vue'
+export { default as CategorizationLayoutRenderer } from './categorization.vue'
 
-import { entry as layoutRendererEntry } from './LayoutRenderer.vue'
-import { entry as categorizationRendererEntry } from './CategorizationRenderer.vue'
+import { entry as verticalAndHorizontalRendererEntry } from './vertical-and-horizontal.vue'
+import { entry as categorizationRendererEntry } from './categorization.vue'
 
-export const layoutRenderers = [
-  layoutRendererEntry,
+export const layoutsRenderers = [
+  verticalAndHorizontalRendererEntry,
   categorizationRendererEntry,
 ]

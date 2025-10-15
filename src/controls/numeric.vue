@@ -14,10 +14,10 @@
       :id="control.id + '-input'"
       :model-value="formattedValue"
       :label="controlWrapper.label"
-      clear-icon="mdi-close"
       :class="styles.control.input"
-      :disable="!control.enabled"
+      :disable="!control.enabled && !isReadonly"
       :placeholder="appliedOptions.placeholder"
+      :readonly="isReadonly"
       :autofocus="appliedOptions.focus"
       :required="control.required"
       :hint="control.description"
@@ -29,22 +29,30 @@
       :step="step"
       type='number'
       outlined
+      hide-bottom-space
       stack-label
       dense
     )
 </template>
 
 <script lang="ts">
-import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isNumberControl } from '@jsonforms/core'
-import { defineComponent } from 'vue'
+import {
+  ControlElement,
+  JsonFormsRendererRegistryEntry,
+  rankWith,
+  isIntegerControl,
+  or,
+  isNumberControl,
+} from '@jsonforms/core'
+import { defineComponent, ref } from 'vue'
 import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
-import { default as ControlWrapper } from './ControlWrapper.vue'
-import { determineClearValue, useQuasarControl } from '../utils'
+import { ControlWrapper } from '../common'
+import { determineClearValue, Options, useQuasarControl } from '../utils'
 import { QInput } from 'quasar'
 import { isEmpty } from 'radash'
 
 const controlRenderer = defineComponent({
-  name: 'NumberControlRenderer',
+  name: 'NumericControlRenderer',
   components: {
     ControlWrapper,
     QInput,
@@ -57,33 +65,17 @@ const controlRenderer = defineComponent({
     const adaptTarget = (value: any) => (isEmpty(value) ? clearValue : Number(value))
     const input = useQuasarControl(useJsonFormsControl(props), adaptTarget)
 
-    // Méthode personnalisée pour gérer la précision
-    const customOnChange = (value: any) => {
-      let processedValue = adaptTarget(value)
-
-      // Si on a une valeur numérique et une précision définie
-      if (processedValue !== clearValue && !isNaN(processedValue)) {
-        const component = input as any
-        const precision = component.precision?.value
-        if (precision !== undefined) {
-          processedValue = Number(processedValue.toFixed(precision))
-        }
-      }
-
-      input.onChange(processedValue)
-    }
-
     return {
       ...input,
       adaptTarget,
-      onChange: customOnChange,
     }
   },
   computed: {
     step(): number {
-      const options: any = this.appliedOptions
+      const defaultStep = this.control.schema.type === 'integer' ? 1 : 0.1
+      const options: Options = this.appliedOptions
 
-      return options.step ?? 0.1
+      return options.step ?? defaultStep
     },
     precision(): number | undefined {
       if (!this.step || Number.isInteger(this.step)) return undefined
@@ -95,8 +87,6 @@ const controlRenderer = defineComponent({
       }
 
       const fraction = stepStr.split('.')[1]
-
-      console.log('Fraction:', fraction)
 
       return fraction ? fraction.length : undefined
     },
@@ -110,7 +100,6 @@ const controlRenderer = defineComponent({
         return this.control.data
       }
 
-      // Si on a une précision définie, formater le nombre
       if (this.precision !== undefined) {
         return num.toFixed(this.precision)
       }
@@ -124,9 +113,10 @@ export default controlRenderer
 
 export const entry: JsonFormsRendererRegistryEntry = {
   renderer: controlRenderer,
-  tester: rankWith(1, isNumberControl),
+  tester: rankWith(1, or(isIntegerControl, isNumberControl)),
 }
 </script>
+
 
 <style>
 input[type='number']::-webkit-inner-spin-button,
@@ -137,5 +127,6 @@ input[type='number']::-webkit-outer-spin-button {
 
 input[type='number'] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 </style>

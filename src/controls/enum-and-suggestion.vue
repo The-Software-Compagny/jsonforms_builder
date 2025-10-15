@@ -16,7 +16,8 @@
       :label="computedLabel"
       :class="styles.control.input"
       clear-icon="mdi-close"
-      :disable="!control.enabled"
+      :disable="!control.enabled && !isReadonly"
+      :readonly="isReadonly"
       :required="control.required"
       :placeholder="appliedOptions.placeholder"
       :options="control.options || suggestions"
@@ -47,7 +48,7 @@ import {
 } from '@jsonforms/core'
 import { defineComponent } from 'vue'
 import { rendererProps, RendererProps, useJsonFormsEnumControl } from '@jsonforms/vue'
-import { default as ControlWrapper } from './ControlWrapper.vue'
+import { ControlWrapper } from '../common'
 import { determineClearValue, useQuasarControl } from '../utils'
 import { QInput } from 'quasar'
 import { isArray, isEmpty, isString } from 'radash'

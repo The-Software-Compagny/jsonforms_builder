@@ -11,7 +11,6 @@
       @update:model-value="onChange"
       @focus="isFocused = true"
       @blur="isFocused = false"
-      :id="control.id + '-input'"
       :model-value="control.data"
       :label="computedLabel"
       :class="styles.control.input"
@@ -30,6 +29,7 @@
       :clearable="isClearable"
       :debounce="100"
       outlined
+      hide-bottom-space
       stack-label
       dense
     )
@@ -39,7 +39,7 @@
 import { ControlElement, JsonFormsRendererRegistryEntry, rankWith, isStringControl } from '@jsonforms/core'
 import { defineComponent } from 'vue'
 import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue'
-import { default as ControlWrapper } from './ControlWrapper.vue'
+import { ControlWrapper } from '../common'
 import { determineClearValue, useQuasarControl } from '../utils'
 import { QInput } from 'quasar'
 import { isEmpty } from 'radash'
