@@ -14,7 +14,6 @@
 import { defineComponent, PropType } from 'vue'
 import { Styles } from '../styles'
 import { Options } from '../utils'
-import { debounce } from 'quasar'
 
 /**
  * ControlWrapper Component
@@ -124,19 +123,12 @@ export default defineComponent({
     },
 
     /**
-     * Handles mouse leave events with debouncing to prevent flickering
-     * Emits update:isHovered event with false value after 300ms delay
+     * Handles mouse leave events to update hover state
      *
-     * Debounce is used to ensure that rapid mouse movements do not cause
-     * unnecessary state changes, improving user experience.
-     *
-     * @see https://quasar.dev/quasar-utils/other-utils#debounce
      * @returns {void}
      */
     mouseLeave(): void {
-      debounce(() => {
-        this.$emit('update:isHovered', false)
-      }, 300)()
+      this.$emit('update:isHovered', false)
     },
   },
 })
