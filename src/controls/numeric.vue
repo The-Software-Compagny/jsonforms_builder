@@ -18,6 +18,7 @@
       :disable="!control.enabled && !isReadonly"
       :placeholder="appliedOptions.placeholder"
       :readonly="isReadonly"
+      clear-icon="mdi-close"
       :autofocus="appliedOptions.focus"
       :required="control.required"
       :hint="control.description"
@@ -116,7 +117,6 @@ export const entry: JsonFormsRendererRegistryEntry = {
   tester: rankWith(1, or(isIntegerControl, isNumberControl)),
 }
 </script>
-
 
 <style>
 input[type='number']::-webkit-inner-spin-button,
