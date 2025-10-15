@@ -114,6 +114,9 @@ export const uischema = {
         {
           type: 'Control',
           scope: '#/properties/dateOfBirth',
+          options: {
+            format: 'DD/MM/YYYY',
+          },
         },
       ],
     },
@@ -186,6 +189,7 @@ export const data = {
   lastName: 'Power',
   height: 1,
   committer: false,
+  dateOfBirth: '22/11/1984',
 }
 
 registerExamples([
