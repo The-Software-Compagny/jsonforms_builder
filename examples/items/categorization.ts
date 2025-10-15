@@ -212,6 +212,7 @@ export const uischema = {
 export const data = {
   provideAddress: true,
   vegetarian: false,
+  birthDate: '1985-06-12',
 };
 
 const schema_1713 = {

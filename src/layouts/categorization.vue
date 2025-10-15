@@ -5,6 +5,8 @@
         v-model="activeCategory"
         dense
         align="justify"
+        outside-arrows
+        mobile-arrows
         swipeable
       )
         q-tab(
@@ -14,7 +16,7 @@
           :label="visibleCategoryLabels[index]"
         )
       q-separator
-      q-tab-panels(v-model="activeCategory" animated)
+      q-tab-panels(v-model="activeCategory")
         q-tab-panel.q-px-none(
           v-for="(element, index) in visibleCategories"
           :key="index"
