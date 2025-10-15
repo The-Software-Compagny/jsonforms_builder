@@ -23,7 +23,7 @@
       :hint="control.description"
       :hide-hint="persistentHint()"
       :error="control.errors !== ''"
-      :hide-bottom-space="control.description"
+      :hide-bottom-space="!!control.description"
       :error-message="control.errors"
       :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
       :clearable="isClearable"

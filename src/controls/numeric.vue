@@ -22,7 +22,7 @@
       :autofocus="appliedOptions.focus"
       :required="control.required"
       :hint="control.description"
-      :hide-bottom-space="control.description"
+      :hide-bottom-space="!!control.description"
       :hide-hint="persistentHint()"
       :error="control.errors !== ''"
       :error-message="control.errors"

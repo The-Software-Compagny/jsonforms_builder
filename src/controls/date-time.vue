@@ -19,7 +19,7 @@
       :disable="!control.enabled"
       :placeholder="appliedOptions.placeholder"
       :required="control.required"
-      :hide-bottom-space="control.description"
+      :hide-bottom-space="!!control.description"
       :autofocus="appliedOptions.focus"
       :hint="control.description"
       :hide-hint="persistentHint()"
@@ -69,6 +69,6 @@ export default controlRenderer
 
 export const entry: JsonFormsRendererRegistryEntry = {
   renderer: controlRenderer,
-  tester: rankWith(2, isDateTimeControl),
+  tester: rankWith(1, isDateTimeControl),
 }
 </script>
