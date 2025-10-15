@@ -23,12 +23,12 @@
       :hint="control.description"
       :hide-hint="persistentHint()"
       :error="control.errors !== ''"
+      :hide-bottom-space="control.description"
       :error-message="control.errors"
       :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
       :clearable="isClearable"
       :debounce="100"
       outlined
-      hide-bottom-space
       stack-label
       dense
     )

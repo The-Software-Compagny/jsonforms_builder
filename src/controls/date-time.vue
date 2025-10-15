@@ -19,6 +19,7 @@
       :disable="!control.enabled"
       :placeholder="appliedOptions.placeholder"
       :required="control.required"
+      :hide-bottom-space="control.description"
       :autofocus="appliedOptions.focus"
       :hint="control.description"
       :hide-hint="persistentHint()"
@@ -29,7 +30,6 @@
       :debounce="100"
       type="datetime-local"
       outlined
-      hide-bottom-space
       stack-label
       dense
     )

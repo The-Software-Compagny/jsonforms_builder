@@ -24,14 +24,13 @@
       :hide-hint="persistentHint()"
       :error="control.errors !== ''"
       :error-message="control.errors"
-      :maxlength="control.schema.maxLength"
+      :hide-bottom-space="control.description"
+      :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
       :counter="appliedOptions.restrict"
       :clearable="isClearable"
       :debounce="100"
       outlined
-      hide-bottom-space
       stack-label
-      dense
     )
 </template>
 

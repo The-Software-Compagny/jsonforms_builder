@@ -128,7 +128,7 @@ export default defineComponent({
      * @returns {void}
      */
     mouseLeave(): void {
-      this.$emit('update:isHovered', false)
+      // this.$emit('update:isHovered', false)
     },
   },
 })

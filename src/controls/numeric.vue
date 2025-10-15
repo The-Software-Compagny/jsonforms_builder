@@ -22,6 +22,7 @@
       :autofocus="appliedOptions.focus"
       :required="control.required"
       :hint="control.description"
+      :hide-bottom-space="control.description"
       :hide-hint="persistentHint()"
       :error="control.errors !== ''"
       :error-message="control.errors"
@@ -30,7 +31,6 @@
       :step="step"
       type='number'
       outlined
-      hide-bottom-space
       stack-label
       dense
     )

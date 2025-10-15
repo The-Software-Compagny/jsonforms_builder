@@ -20,6 +20,7 @@
       :readonly="isReadonly"
       :required="control.required"
       :placeholder="appliedOptions.placeholder"
+      :hide-bottom-space="control.description"
       :options="control.options || suggestions"
       option-value="value"
       option-label="label"

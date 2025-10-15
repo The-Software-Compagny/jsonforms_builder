@@ -18,10 +18,10 @@
       :hide-hint="persistentHint()"
       :error="control.errors !== ''"
       :error-message="control.errors"
+      :hide-bottom-space="control.description"
       :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
       :debounce="100"
       outlined
-      hide-bottom-space
       stack-label
       dense
     )

@@ -68,6 +68,7 @@ export const schema = {
       properties: {
         street: {
           type: 'string',
+          minLength: 2,
         },
         streetnumber: {
           type: 'string',
