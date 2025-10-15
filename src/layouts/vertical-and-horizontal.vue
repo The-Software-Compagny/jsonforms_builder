@@ -1,5 +1,5 @@
 <template lang="pug">
-  .q-col-gutter-sm.q-pb-sm(
+  .q-col-gutter-sm(
     v-if="layout.visible"
 
     :class="[layoutClassObject.root, layout.direction]"
@@ -8,7 +8,8 @@
       v-for="(element, index) in layout.uischema.elements"
 
       :key="`${layout.path}-${index}`"
-      :class="['col-xs-12', `col-md-${12 / layout.uischema.elements.length}`, layoutClassObject.item]"
+      :class="['col-xs-12', `col-md-${12 / layout.uischema.elements.length}`, layoutClassObject.item, layout.direction === 'column' ? 'q-pb-sm' : 'q-pr-sm']"
+      style="max-width: 100%;"
     )
       dispatch-renderer(
         :schema="layout.schema"
@@ -79,9 +80,7 @@ const layoutRenderer = defineComponent({
      * @returns Appropriate style classes for horizontal or vertical layouts
      */
     layoutClassObject(): any {
-      return this.layout.direction === 'row'
-        ? this.styles.horizontalLayout
-        : this.styles.verticalLayout
+      return this.layout.direction === 'row' ? this.styles.horizontalLayout : this.styles.verticalLayout
     },
   },
 })
@@ -99,3 +98,8 @@ export const entry: JsonFormsRendererRegistryEntry = {
   tester: rankWith(1, isLayout), // Matches UI elements with layout types (VerticalLayout/HorizontalLayout)
 }
 </script>
+
+<style>
+.q-custom {
+}
+</style>

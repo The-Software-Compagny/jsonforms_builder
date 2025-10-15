@@ -6,7 +6,7 @@
     :applied-options="appliedOptions"
     v-model:is-hovered="isHovered"
   )
-    q-field(
+    q-field.q-custom(
       v-bind="quasarProps('q-field')"
       @focus="handleFocus"
       @blur="handleBlur"
@@ -22,7 +22,7 @@
       stack-label
       dense
     )
-      q-checkbox(
+      q-checkbox.non-selectable(
         v-bind="quasarProps('q-checkbox')"
         @update:model-value="onChange"
         :id="control.key + '_checkbox'"
@@ -104,3 +104,11 @@ export const entry: JsonFormsRendererRegistryEntry = {
   tester: rankWith(1, isBooleanControl), // Matches schema properties with type "boolean"
 }
 </script>
+
+<style lang="scss">
+.q-custom {
+  .q-field__control {
+    color: inherit;
+  }
+}
+</style>
