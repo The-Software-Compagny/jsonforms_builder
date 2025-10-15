@@ -4,6 +4,7 @@
 
     v-if="label.visible"
 
+    :title="label.text"
     :style="labelStyle"
     :class="styles.label.root"
     :id="label.id"
@@ -66,7 +67,7 @@ const labelRenderer = defineComponent({
         minHeight: '32px',
       }
     },
-  }
+  },
 })
 
 export default labelRenderer
