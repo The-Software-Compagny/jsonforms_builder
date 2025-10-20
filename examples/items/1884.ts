@@ -115,7 +115,7 @@ export const uischema = {
           type: 'Control',
           scope: '#/properties/dateOfBirth',
           options: {
-            format: 'DD/MM/YYYY',
+            pattern: 'DD/MM/YYYY',
           },
         },
       ],

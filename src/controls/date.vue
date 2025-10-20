@@ -28,28 +28,50 @@
       :maxlength="appliedOptions.restrict ? control.schema.maxLength : undefined"
       :clearable="isClearable"
       :debounce="100"
-      :type="dateFormat"
-      step="1"
+      inputmode="numeric"
+      :step="optionPattern.includes('s') ? 1 : 0"
       outlined
       stack-label
       dense
     )
       template(#prepend)
-        q-icon.cursor-pointer(v-if="dateFormat === 'datetime-local' || dateFormat === 'date'" name="mdi-calendar")
+        q-icon.cursor-pointer(v-if="inputType === 'datetime-local'" name="mdi-calendar-clock")
+          q-popup-proxy(ref="popupProxy")
+            q-card.row(flat)
+              .col
+                q-date(
+                  v-bind="quasarProps('q-date')"
+                  @update:model-value="onChangeDate"
+                  :model-value="controlData"
+                  first-day-of-week="1"
+                  :mask="patternDefault"
+                  square
+                )
+              .col
+                q-time(
+                  v-bind="quasarProps('q-time')"
+                  @update:model-value="onChangeDate"
+                  :model-value="controlData"
+                  format24h
+                  with-seconds
+                  square
+                )
+        q-icon.cursor-pointer(v-else-if="inputType === 'date'" name="mdi-calendar")
           q-popup-proxy(ref="popupProxy")
             q-date(
               v-bind="quasarProps('q-date')"
               @update:model-value="onChangeDate"
               :model-value="controlData"
               first-day-of-week="1"
-              mask="YYYY-MM-DD"
+              :mask="patternDefault"
             )
-        q-icon.cursor-pointer(v-if="dateFormat === 'datetime-local' || dateFormat === 'time'" name="mdi-clock")
+        q-icon.cursor-pointer(v-else-if="inputType === 'time'" name="mdi-clock")
           q-popup-proxy(ref="popupProxy")
             q-time(
               v-bind="quasarProps('q-time')"
               @update:model-value="onChangeDate"
               :model-value="controlData"
+              :with-seconds="optionPattern.includes('s')"
               format24h
             )
 </template>
@@ -76,6 +98,8 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
 const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD'
+const DEFAULT_DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
+const DEFAULT_TIME_FORMAT = 'HH:mm:ss'
 
 const controlRenderer = defineComponent({
   name: 'DateControlRenderer',
@@ -99,28 +123,42 @@ const controlRenderer = defineComponent({
     }
   },
   computed: {
-    appliedOptionsFormat(): string {
-      return this.appliedOptions.format || DEFAULT_DATE_FORMAT
+    optionPattern(): string {
+      return this.appliedOptions.pattern || this.patternDefault
     },
     controlData() {
-      const date = dayjs(this.control.data, this.appliedOptionsFormat, true)
+      const date = dayjs(this.control.data, this.optionPattern, true)
 
-      return date.format(DEFAULT_DATE_FORMAT)
+      return date.format(this.patternDefault)
     },
-    dateFormat() {
+    inputType() {
       const format = this.control.schema.format || this.control.uischema?.options?.format || 'date'
 
       if (format === 'date-time') return 'datetime-local'
       if (format === 'time') return 'time'
       return 'date'
     },
+    patternDefault() {
+      const format = this.control.schema.format || this.control.uischema?.options?.format || 'date'
+
+      if (format === 'date-time') return DEFAULT_DATETIME_FORMAT
+      if (format === 'time') return DEFAULT_TIME_FORMAT
+      return DEFAULT_DATE_FORMAT
+    },
   },
   methods: {
     onChangeDate(value: string) {
-      const date = dayjs(value, DEFAULT_DATE_FORMAT, true)
+      const date = dayjs(value, this.patternDefault, true)
 
-      this.onChange(date.format(this.appliedOptionsFormat))
-      this.popupProxy?.hide()
+      this.onChange(date.format(this.optionPattern))
+      console.log('d', {
+        value,
+        date,
+        optionPattern: this.optionPattern,
+        patternDefault: this.patternDefault,
+        format: date.format(this.optionPattern),
+      })
+      // this.popupProxy?.hide()
     },
   },
 })

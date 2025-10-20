@@ -39,6 +39,7 @@ export const schema = {
           type: 'string',
           format: 'time',
           description: 'schema-based time picker',
+          pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$',
         },
         datetime: {
           type: 'string',
@@ -79,10 +80,16 @@ export const uischema = {
         {
           type: 'Control',
           scope: '#/properties/schemaBased/properties/time',
+          options: {
+            pattern: 'HH:mm',
+          },
         },
         {
           type: 'Control',
           scope: '#/properties/schemaBased/properties/datetime',
+          options: {
+            pattern: 'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+          },
         },
       ],
     },
@@ -95,12 +102,11 @@ export const uischema = {
           label: 'Year Month Picker',
           options: {
             format: 'date',
-            clearLabel: 'Clear it!',
-            cancelLabel: 'Abort',
-            okLabel: 'Do it',
-            views: ['year', 'month'],
-            dateFormat: 'YYYY.MM',
-            dateSaveFormat: 'YYYY-MM',
+            // clearLabel: 'Clear it!',
+            // cancelLabel: 'Abort',
+            // okLabel: 'Do it',
+            // views: ['year', 'month'],
+            // pattern: 'YYYY.MM',
           },
         },
         {
@@ -108,17 +114,21 @@ export const uischema = {
           scope: '#/properties/uiSchemaBased/properties/time',
           options: {
             format: 'time',
-            ampm: true,
+            // ampm: true,
           },
         },
         {
           type: 'Control',
           scope: '#/properties/uiSchemaBased/properties/datetime',
+          // options: {
+          //   format: 'date-time',
+          //   dateTimeFormat: 'DD-MM-YY hh:mm:a',
+          //   dateTimeSaveFormat: 'YYYY/MM/DD h:mm a',
+          //   ampm: true,
+          // },
           options: {
             format: 'date-time',
-            dateTimeFormat: 'DD-MM-YY hh:mm:a',
-            dateTimeSaveFormat: 'YYYY/MM/DD h:mm a',
-            ampm: true,
+            pattern: 'YYYY-MM-DDTHH:mm',
           },
         },
       ],
@@ -129,7 +139,7 @@ export const uischema = {
 export const data = {
   schemaBased: {
     date: new Date().toISOString().substr(0, 10),
-    time: '13:37:00',
+    time: '13:37',
     datetime: new Date().toISOString(),
   },
   uiSchemaBased: {
