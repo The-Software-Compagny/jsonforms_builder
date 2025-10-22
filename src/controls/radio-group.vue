@@ -6,18 +6,37 @@
     :applied-options="appliedOptions"
     v-model:is-hovered="isHovered"
   )
-    q-option-group(
-      v-bind="quasarProps('q-option-group')"
-      type="radio"
-      @update:model-value="onChange"
-      @focus="isFocused = true"
-      @blur="isFocused = false"
-      :id="control.id + '_q-option-group'"
-      :model-value="control.data"
+    q-field.q-custom(
+      v-bind="quasarProps('q-field')"
+      @focus="handleFocus"
+      @blur="handleBlur"
+      :id="control.key"
+      :label="computedLabel"
       :class="styles.control.input"
-      :disable="!control.enabled"
-      :options="control.options"
+      :hint="control.description"
+      :required="control.required"
+      :hide-hint="persistentHint()"
+      :error="control.errors !== ''"
+      :error-message="control.errors"
+      borderless
+      hide-bottom-space
+      stack-label
+      dense
     )
+      q-option-group.q-py-sm(
+        v-bind="quasarProps('q-option-group')"
+        type="radio"
+        @update:model-value="onChange"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
+        :id="control.id + '_q-option-group'"
+        :model-value="control.data"
+        :class="styles.control.input"
+        :disable="!control.enabled"
+        :options="control.options"
+        inline
+        dense
+      )
 </template>
 
 <script lang="ts">
@@ -57,3 +76,11 @@ export const entry: JsonFormsRendererRegistryEntry = {
   tester: rankWith(20, and(isEnumControl, optionIs('format', 'radio'))),
 }
 </script>
+
+<style lang="scss">
+.q-custom {
+  .q-field__control {
+    color: inherit;
+  }
+}
+</style>

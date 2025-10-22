@@ -8,6 +8,10 @@
   )
     q-input(
       v-bind="quasarProps('q-input')"
+      @keydown.up.stop="keydownHandler($event, 1)"
+      @keydown.down.stop="keydownHandler($event, -1)"
+      @keyup.up.stop="keyupHandler($event, 1)"
+      @keyup.down.stop="keyupHandler($event, -1)"
       @update:model-value="onChangeDate"
       @focus="isFocused = true"
       @blur="isFocused = false"
@@ -30,6 +34,7 @@
       :debounce="100"
       inputmode="numeric"
       :step="optionPattern.includes('s') ? 1 : 0"
+      :mask="maskPattern"
       outlined
       stack-label
       dense
@@ -131,6 +136,11 @@ const controlRenderer = defineComponent({
 
       return date.format(this.patternDefault)
     },
+    maskPattern() {
+      const pattern = this.optionPattern
+
+      return pattern.replace(/Y|M|D|H|m|s/g, '#')
+    },
     inputType() {
       const format = this.control.schema.format || this.control.uischema?.options?.format || 'date'
 
@@ -160,6 +170,75 @@ const controlRenderer = defineComponent({
       })
       // this.popupProxy?.hide()
     },
+    keydownHandler(ev, pos: number) {
+      ev.preventDefault()
+      console.log('keydown prevented', ev, pos)
+    },
+    keyupHandler(ev, pos: number) {
+      ev.preventDefault()
+      const cursorPosition = ev.target.selectionStart
+      this.changeValueAtPosition(pos, cursorPosition)
+      console.log('keyup', ev, pos, 'cursor at:', cursorPosition)
+    },
+    changeValueAtPosition(increment: number, cursorPosition: number) {
+      const currentDate = dayjs(this.control.data, this.optionPattern, true)
+
+      if (!currentDate.isValid()) {
+        // Si pas de date valide, utiliser la date actuelle
+        const date = dayjs()
+        this.onChange(date.format(this.optionPattern))
+        return
+      }
+
+      // Détecter quelle partie de la date modifier selon la position du curseur
+      const dateUnit = this.getDateUnitFromPosition(cursorPosition)
+      const newDate = currentDate.add(increment, dateUnit)
+
+      this.onChange(newDate.format(this.optionPattern))
+      //console.log(`Value changed by ${increment} ${dateUnit} to`, newDate.format(this.optionPattern))
+    },
+    getDateUnitFromPosition(position: number): string {
+      const pattern = this.optionPattern
+
+      // Si position dépasse le pattern, utiliser la dernière position valide
+      const safePosition = Math.min(position, pattern.length - 1)
+
+      // Trouver le caractère de format à cette position ou proche
+      let formatChar = pattern[safePosition]
+
+      // Si c'est un séparateur, chercher le caractère de format le plus proche
+      if (![...'YMDHms'].includes(formatChar)) {
+        // Chercher vers la gauche d'abord
+        for (let i = safePosition; i >= 0; i--) {
+          if ([...'YMDHms'].includes(pattern[i])) {
+            formatChar = pattern[i]
+            break
+          }
+        }
+        // Si pas trouvé, chercher vers la droite
+        if (![...'YMDHms'].includes(formatChar)) {
+          for (let i = safePosition; i < pattern.length; i++) {
+            if ([...'YMDHms'].includes(pattern[i])) {
+              formatChar = pattern[i]
+              break
+            }
+          }
+        }
+      }
+
+      console.log('Detected format char:', formatChar)
+
+      // Mapper le caractère de format vers l'unité dayjs
+      switch (formatChar) {
+        case 'Y': return 'year'
+        case 'M': return 'month'
+        case 'D': return 'day'
+        case 'H': return 'hour'
+        case 'm': return 'minute'
+        case 's': return 'second'
+        default: return 'day' // fallback
+      }
+    }
   },
 })
 

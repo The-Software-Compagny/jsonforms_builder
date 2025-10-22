@@ -100,7 +100,7 @@ export const translations = {
     label: 'Basic Information',
   },
     name: 'Nom',
-  additionalInformationLabel: 'Additional Informationzzzzzzzz',
+  additionalInformationLabel: 'Additional Information',
 };
 export const translate: Translator = (key: string, defaultMessage: string) => {
   return get(translations, key) ?? defaultMessage;

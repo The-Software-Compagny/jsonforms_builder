@@ -116,6 +116,10 @@ export const extendedSchema = {
       type: 'string',
       description: 'Multiline Example',
     },
+    objectDoc: {
+      type: 'object',
+      description: 'WYSIWYG Example',
+    },
     slider: {
       type: 'number',
       minimum: 1,
@@ -154,6 +158,13 @@ export const extendedSchema = {
 export const extendedUischema = {
   type: 'VerticalLayout',
   elements: [
+    {
+      type: 'Control',
+      scope: '#/properties/objectDoc',
+      options: {
+        wysiwyg: true,
+      },
+    },
     {
       type: 'Control',
       scope: '#/properties/multilineString',
@@ -209,6 +220,69 @@ export const extendedUischema = {
 
 export const extendedData = {
   multilineString: 'Multi-\nline\nexample',
+  objectDoc: {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "underline"
+              }
+            ],
+            "text": "Multi"
+          },
+          {
+            "type": "text",
+            "text": "-"
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "italic"
+              }
+            ],
+            "text": "line"
+          },
+          {
+            "type": "text",
+            "text": " "
+          },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "bold"
+              }
+            ],
+            "text": "example"
+          }
+        ]
+      },
+      {
+        "type": "paragraph"
+      },
+      {
+        "type": "heading",
+        "attrs": {
+          "level": 3
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "test"
+          }
+        ]
+      },
+      {
+        "type": "paragraph"
+      }
+    ]
+  },
   slider: 4,
   trimText: 'abcdefg',
   restrictText: 'abcde',

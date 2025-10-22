@@ -106,7 +106,7 @@ export const uischema = {
             // cancelLabel: 'Abort',
             // okLabel: 'Do it',
             // views: ['year', 'month'],
-            // pattern: 'YYYY.MM',
+            pattern: 'YYYY.MM',
           },
         },
         {

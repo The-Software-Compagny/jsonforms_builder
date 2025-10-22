@@ -29,7 +29,7 @@ export const schema = {
   "properties": {
     "exampleRadioEnum": {
       "type": "string",
-      "enum": ["Red", "Green", "Blue"]
+      "enum": ["Red", "Green", "Blue", "Yellow", "Purple", "Orange", "Black", "White"],
     }
   }
 }
